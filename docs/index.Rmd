@@ -12,9 +12,15 @@ output:
       smooth_scroll: false
 ---
 
-Welcome to the PS2010 Code Bank. Here you will find a collection of the R code used for all data analyses covered across the module. Use the menu on the left hand side to navigate.
+Welcome to the PS2010 Code Bank. Here you will find a collection of the R code used for all data analyses covered across the module. Use the menu on the left hand side to navigate. 
 
-# **Basics**
+Some important tips:
+
+* The data used in all of this code will be referred to as "mydata". Make sure you change this if you have called your data something else.
+
+* Where you see `NULL`, `NULL1`, `NULL2` etc is where you will need to add information based on the data set you are using.
+
+# **1) Basics**
 
 ## Install and Load Packages
 
@@ -34,7 +40,7 @@ htmltools::tagList(
 
 ```{r, eval=FALSE}
 install.packages(NULL)
-install.packages("tidyverse")
+install.packages("tidyverse") #An example of this code
 ```
 Change `NULL` to the name of the package.
 
@@ -43,7 +49,7 @@ Change `NULL` to the name of the package.
 ### **Load a package**
 ```{r, eval=FALSE}
 library(NULL)
-library(tidyverse)
+library(tidyverse) #An example of this code
 ```
 Change `NULL` to the name of the package.
 
@@ -54,7 +60,7 @@ Change `NULL` to the name of the package.
 ### **Set the Working Directory**
 ```{r, eval=FALSE}
 setwd(NULL)
-setwd(C:/Users/username/documents)
+setwd(C:/Users/username/documents) #An example of this code
 ```
 Change `NULL` to the folder path.
 
@@ -75,13 +81,15 @@ This will tell you the current working directory.
 ### **Import Data**
 ```{r, eval=FALSE}
 mydata = read_csv(NULL)
-mydata = read_csv("experiment_data.csv")
+mydata = read_csv("experiment_data.csv") #An example of this code
 ```
 `mydata` is the object that we save the data under. You can call it whatever you like.
 
+You can see the data in the Environment panel (top right in RStudio).
+
 Change `NULL` to the name of the file. 
 
-Remember to add ".csv" at the end of the filename. 
+Remember to add ".csv" at the end of the file name. 
 
 R only reads .csv data files.
 
@@ -89,11 +97,79 @@ Note: `read_csv()` requires the tidyverse package.
 
 ***
 
-# **Describing Data**
+# **2) Describing Data**
 
-# **T-tests**
+## Summary Statistics
 
-# **One-Way ANOVA**
+***
 
-# **Factorial ANOVA**
+### Quickly Summarising a Data Set
+```{r, eval=FALSE}
+summary(NULL)
+summary(mydata) #An example of this code
+```
+Change `NULL` to the name of the object/data file you want to summarise.
+
+***
+
+### Splitting by Group or Variable
+```{r, eval=FALSE}
+NULL1 = mydata |>
+  group_by(NULL2) |>
+  summarise(
+    mean = mean(NULL3)
+    sd = sd(NULL3)
+  )
+```
+Change `NULL1` to the name of the object/data file you want to create (i.e that will hold the descriptive statistics)
+
+Change `NULL2` to the name of the variable you want to split the data by.
+
+Change `NULL3` to the name of the dependent variable you want the descriptive statistics for.
+
+See the example below:
+
+```{r, eval=FALSE}
+summary_by_group = mydata |>
+  group_by(drink) |>
+  summarise(
+    mean = mean(bpm)
+    sd = sd(bpm)
+  )
+```
+Line by line analysis:
+
+1. The first line creates an object called `summary_by_group` which uses `mydata` AND THEN
+
+2. It will group `mydata` by the grouping variable, in this example called `drink` AND THEN
+
+3. It asks for the `summarise()` function.
+
+4. It will call the mean `mean` and ask for the mean of our dependent variable using `mean(bpm)`
+
+5. It will call the standard deviation `sd` and ask for the standard deviation of our dependent variable using `sd(bpm)`
+
+6. It will close the code with a final `)`
+
+***
+
+### Mean and Standard Deviation for an Entire Data Set
+
+Use the code above again, but just remove the `group_by()` line of code. See example below:
+
+```{r, eval=FALSE}
+summary_by_group = mydata |>
+  summarise(
+    mean = mean(bpm)
+    sd = sd(bpm)
+  )
+```
+
+***
+
+# **3) T-tests**
+
+# **4) One-Way ANOVA**
+
+# **5) Factorial ANOVA**
 
