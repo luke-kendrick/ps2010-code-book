@@ -1,0 +1,2512 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    theme: flatly
+    highlight: haddock
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r xaringanExtra-clipboard, echo=FALSE}
+htmltools::tagList(
+  xaringanExtra::use_clipboard(
+    button_text = "<i class=\"fa fa-clipboard\" style=\"font-size: 24px;\"></i>",
+    success_text = "<i class=\"fa fa-check\" style=\"color: #90BE6D; font-size: 24px;\"></i>",
+  ),
+  rmarkdown::html_dependency_font_awesome()
+)
+```
+
+------------------------------------------------------------------------
+
+# **PS2010 Workshops Code Book**
+
+------------------------------------------------------------------------
+
+# **Workshop 1: Describing Data**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/excel.jpg){width="90" height="90"}
+
+Create your .csv file.
+You need to do this in excel.
+You should use the data below.
+
+```{r, eval = TRUE, echo = FALSE, warning = FALSE}
+library(knitr)
+# Create a sample data frame
+data <- data.frame(
+  id = c(1, 2, 3, 4, 5),
+  water = c(77, 79, 85, 96, 62),
+  redcow = c(68, 53, 50, 63, 82)
+)
+# Generate HTML table
+kable(data, format = "html", table.attr = 'class="my_table"')
+```
+
+```{=html}
+<style>
+  .my_table {
+    width: 30%;  /* Set the total width of the table */
+  }
+  .my_table td:nth-child(1) {
+    width: 20%;  /* Set the width of the first column */
+  }
+  .my_table td:nth-child(2) {
+    width: 40%;  /* Set the width of the second column */
+  }
+  .my_table td:nth-child(3) {
+    width: 40%;  /* Set the width of the third column */
+  }
+</style>
+```
+Your data should be in long format and have three columns: `id`, `drink`, and `sleep`.\
+It should look like the image below:
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/1.1.png)
+
+Make sure you save it as a `.csv`.
+file.
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+Next we need to call any packages!
+
+```{r, eval = FALSE}
+install.packages("tidyverse") #installs the tidyverse package if you don't have it already
+library(tidyverse) #calls the tidyverse package.
+```
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/importdata.png){width="240" height="50"}
+
+Import your newly created data file into RStudio using `read_csv()`.\
+Make sure your working directory is set-up correctly.\
+If this works, you should see `mydata` appear in the environment (top right panel).
+
+```{r, eval = FALSE}
+mydata <- read_csv("redcow.csv")
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+Today we will just quickly check our data.
+
+```{r, eval = FALSE}
+head(mydata) # shows the first few rows of your data.
+names(mydata) # shows the variable names.
+summary(mydata) # provides summary statistics of a data set.
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+descriptives_bygroup <- mydata %>% #Which data set to use
+  group_by(drink) %>% # splits file by "drink"
+  summarise(mean_bpm = mean(sleep), sd_bpm = sd(sleep)) # ask for the mean and standard deviation
+
+print(descriptives_bygroup)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Four (Optional)**
+
+```{r, eval = FALSE}
+descriptives_all <- mydata %>% #Which data set to use
+  summarise(mean_bpm = mean(sleep), sd_bpm = sd(sleep)) # ask for the mean and standard deviation
+
+print(descriptives_all)
+```
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 2: T-tests (Independent)**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+We need to call any packages!
+
+```{r, eval = FALSE}
+install.packages("rstatix")
+library(tidyverse)
+library(rstatix)
+```
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/importdata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+mydata <- read_csv("redcow2.csv")
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+names(mydata) 
+summary(mydata)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+# we want to produce some basic descriptive statistics for our data set.
+# we know that we want to compare redcow with water, so use the same code from last week to produce mean values.
+descriptives_bygroup <- mydata %>%
+  group_by(drink) %>%
+  summarise(m = mean(sleep), sd = sd(sleep))
+
+# now we will print our descriptive stats in something called a tibble
+print(descriptives_bygroup) # print to console
+view(descriptives_bygroup) # open in new tab, it is best to use this
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Four**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Run an independent t-test comparing beats per minute (bpm) for the redcow vs. water groups.
+
+```{r, eval = FALSE}
+# we want to run a t-test to compare the bpm (dependent variable) across the two drink groups (independent variable: redcow and water)
+redcow_t <- t.test(sleep ~ drink, mydata, var.equal = FALSE)
+
+print(redcow_t)
+
+# we also want to find and report the effect size. for a t-test we can use Cohen's d.
+mydata %>% 
+  cohens_d(sleep ~ drink, var.equal = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Five**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/evaluatemodel.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+# we want to check any necessary assumptions that might change how we interpret our model
+# we do not need to look at homogeneity of variance when using Welch's t-test.
+# we only need to look at normality.
+hist(mydata$sleep[mydata$drink == "redcow"]) #creates histogram for redcow
+hist(mydata$sleep[mydata$drink == "water"]) #creates histogram for water
+
+shapiro.test(mydata$sleep[mydata$drink == "redcow"]) #runs Shapiro test for redcow
+shapiro.test(mydata$sleep[mydata$drink == "water"]) #runs Shapiro test for water
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Six (Optional)**
+
+You will practice graphing your findings from next week.
+But for those of you who want a head start, feel free to run the code below to visually present your descriptive statistics.
+Copy and paste the code below.
+
+```{r, eval = FALSE}
+# use the code to create a box plot of your descriptive statistics.
+ggplot(mydata, aes(x = drink, y = sleep)) +
+  geom_boxplot() +
+  labs(title = "Sleep Quality Score for RedCow vs Water",
+       x = "Drink",
+       y = "Mean Sleep Quality Score") +
+  theme_classic()
+```
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 3: T-tests (Repeated and One Sample)**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+We need to call any packages!
+
+```{r, eval = FALSE}
+install.packages("rstatix")
+install.packages("effectsize")
+library(tidyverse)
+library(rstatix)
+library(effectsize)
+```
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/importdata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+mydata <- read_csv("redcow3.csv")
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+head(mydata)
+summary(mydata) 
+```
+
+It looks as though the data are not in long format.\
+We need to create a new data set with the data in long format.\
+Thankfully we can do this with some simple code:
+
+```{r, eval = FALSE}
+mydata_long <- mydata %>%               # creates a new object called mydata_long
+  pivot_longer(cols = c(before, after), # use pivot_longer() and select the column names.
+               names_to = "time",       # give a column name for our independent variable
+               values_to = "bpm")       # give a column name for our dependent variable
+```
+
+Check that `mydata_long` has appeared in the environment (top right panel)
+
+------------------------------------------------------------------------
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+Adapt the code below to produce descriptive statistics.\
+You need to use the variable names from your long data file: `time` and `bpm`.\
+Change `NULL` to the relevant details.
+
+```{r, eval = FALSE}
+descriptives <- NULL %>%                       # Which data set will you use?
+  group_by(NULL) %>%                          # what should you split the file by?
+  summarise(mean = mean(NULL), sd = sd(NULL)) # mean and standard deviation of the dependent variable
+
+view(NULL)
+```
+
+We can also look at a box plot too.
+Use the code below:
+
+```{r, eval = FALSE}
+ggplot(mydata_long, aes(x = time, y = bpm, fill = time)) +
+  geom_boxplot() +
+  theme_classic()
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Four**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Run a repeated t-test comparing BPM before and after drinking RedCow.
+
+```{r, eval = FALSE}
+# we want to run a t-test to compare the bpm (dependent variable) across time (levels: before vs. after)
+before <- mydata_long$bpm[mydata_long$time == "before"] # tell R which data is "before"
+after <- mydata_long$bpm[mydata_long$time == "after"]   # tell R which data is "after"
+
+redcow_t <- t.test(before, after, paired = TRUE)
+
+print(redcow_t)
+
+# we also want to find and report the effect size. for a t-test we can use Cohen's d.
+cohens_d(before, after, paired = TRUE)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Five**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/evaluatemodel.png){width="240" height="50"}
+
+Use the lines of code below to check the assumption of normality.\
+Remember to check back on the lecture slides if you need.\
+Firstly, we need to calculate a difference score.
+
+```{r, eval = FALSE}
+# we need to check normality, but for the difference scores (see the lecture if this doesn't make sense)
+# first we need to calculate the difference score
+# we will go back to the original data file "mydata" for this, not "mydata_long"
+diff_score = mydata$before - mydata$after 
+
+hist(diff_score) #creates histogram for the diff_score
+shapiro.test(diff_score) #runs Shapiro test for diff_score
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Six**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Re-run the analysis presented in lecture.\
+However, have you noticed how chocolate bars seem smaller and smaller these days?\
+Well, here at RedCow we also want to introduce smaller bars Run the analysis using redcowchoc.csv, but this time the reference value is 30 grams.\
+Remember to amend the code below to replace `NULL`.
+
+```{r, eval = FALSE}
+# import data
+mydata2 <- read_csv("redcowchoc.csv")
+
+# run one sample t-test against the reference value of 30g
+t.test(mydata2$weight, mu = NULL)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Seven (Optional)**
+
+```{r, eval = FALSE}
+# 7.1 advancing data visualisation: boxplot
+
+#reusing the code for the boxplot in exercise 3, let's tidy up the boxplot by adding some labels.
+ggplot(mydata_long, aes(x = time, y = bpm)) +
+  geom_boxplot() +
+  labs(title = "Resting Heart Rate After Consumption of RedCow",
+       x = "Time",
+       y = "Median Beats per Minute (BPM)") +
+  theme_classic()
+
+## 7.2 advancing data visualisation: bar chart
+
+#this is example code for a bar chart to look at for now, you'll learn more about how it works in future classes!
+ggplot(mydata_long, aes(x = time, y = bpm)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "lightgrey", width = 0.7) +
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), geom = "errorbar", width = 0.2) +
+  labs(title = "Resting Heart Rate After Consumption of RedCow",
+       x = "Time Point",
+       y = "Mean Beats per Minute (BPM)") +
+  theme_classic()
+```
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 4: One-Way ANOVA (Independent)**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+We need to call any packages!
+
+```{r, eval = FALSE}
+# only install packages if you don't have them installed already
+install.packages("emmeans")
+install.packages("afex")
+install.packages("car")
+
+# otherwise just call the packages
+library(tidyverse)
+library(afex)
+library(rstatix)
+library(emmeans)
+library(broom)
+library(car)
+```
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/importdata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+mydata <- read_csv("earlybird.csv")
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+# have a quick check of your data file to learn about it.
+head(mydata)
+names(mydata)
+summary(mydata)
+```
+
+We need to code our variables.\
+Any categorical variable needs to be set-up as a factor (as.factor) and any scale/numerical variables need to be set-up as a numeric value (as.numeric).\
+This is an important step because it could cause issues later if missed.
+
+```{r, eval = FALSE}
+# now you are working with more complex data sets, we need to make sure variables are set-up correctly. This is quite an important step.
+# we need to make sure any categorical variables are coded as a "factor" and any scale variables are coded as "numeric".
+mydata$group <- factor(mydata$group)      #turns group into a factor
+mydata$alert <- as.numeric(mydata$alert)  #turns this into numeric
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+Adapt the code below to produce descriptive statistics (replace `NULL`).
+
+```{r, eval = FALSE}
+descriptives <- NULL %>%                       # Which data set will you use?
+  group_by(NULL) %>%                          # what should you split the file by?
+  summarise(mean = mean(NULL), sd = sd(NULL)) # mean and standard deviation of the dependent variable
+
+view(NULL)
+```
+
+We can also look at a box plot of our data.
+Use the code below to generate a box plot:
+
+```{r, eval = FALSE}
+#how about a box plot too
+
+ggplot(mydata, aes(x = group, y = alert, fill = group)) +
+  geom_boxplot() +
+  theme_classic()
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Four**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Run a one-way independent ANOVA comparing the three groups (lark, neither, owl) as the independent variable and the alertness score as dependent variable.\
+For this exercise you should run a post-hoc test.
+
+```{r, eval = FALSE}
+#run the ANOVA model
+anova_result <- aov_ez(id = "id",             # identifier variable
+                       dv = "alert",          # dependent variable variable name
+                       between = "group",     # between subjects variable name
+                       type = 3,              # leave this as `3`
+                       include_aov = TRUE,    # leave this as `TRUE`
+                       data = mydata)         # name of your data file
+
+# just some code to help tidy the output
+anova_result_output <- (anova_result$anova_table) %>%
+  tidy()
+view(anova_result_output)
+
+# we need eta squared for the effect size
+install.packages("effectsize")
+library(effectsize)
+eta_squared(anova_result, partial = FALSE) # asks for eta square
+```
+
+**Post-hoc Options**
+
+First we need to run `emmeans()`
+
+```{r, eval = FALSE}
+# we need emmeans to run post-hocs
+em_means <- emmeans(anova_result, ~ group)  # group is the between subjects variable in our data
+```
+
+Then set-up the pairwise comparisons and decide which alpha level adjustment to use.\
+Pick one from either:\
+1.
+Holm\
+2.
+Bonferroni\
+3.
+Tukey HSD
+
+```{r, eval = FALSE}
+pairwise_contrasts <- contrast(em_means, method = "pairwise") # set up pairwise comparisons
+
+print(pairwise_contrasts, adjust = "holm")                    # applies holm adjustment
+print(pairwise_contrasts, adjust = "bonferroni")              # applies bonf adjustment
+print(pairwise_contrasts, adjust = "tukey")                   # applies tukey adjustment
+```
+
+For future reference, here is the Games-Howell Option
+
+```{r, eval = FALSE}
+# Games-Howell is an option for post-hocs when you have unequal variances
+games_howell <- mydata %>%
+  games_howell_test(alert ~ group)  # group is the between subjects variable in our data
+
+print(games_howell)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Five**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Ordinarily we wouldn't run multiple analyses on the same data set (this is considered dodgy and is known as p-hacking).\
+But, for education purposes I'm going to ask you to break the rules and re-analyse the same data, this time using a planned contrast.
+
+We will use the same ANOVA model from the previous exercise: `anova_result` The model is the same, we are just going to use a planned contrast instead of post-hoc.
+
+```{r, eval = FALSE}
+# we need emmeans to run planned contrasts
+em_means <- emmeans(anova_result, ~ group)  # group is the between subjects variable in our data
+```
+
+Let's view the levels of your data and the order they're in This is important as we have to make sure the order matches our contrasts.
+
+```{r, eval = FALSE}
+levels(mydata$group) # tells us the order to set up any specified contrasts.
+                     # this order matters as it must match your contrast codes
+```
+
+**Simple Contrast**
+
+```{r, eval = FALSE}
+simple_contrast <- contrast(em_means, method = list(
+  "lark vs neither" = c(-1, 1, 0),      # compares the first level to the second level
+  "lark vs owl" = c(-1, 0, 1)))         # compares the first level to the third level
+
+print(simple_contrast, adjust = "holm")
+```
+
+**Repeated Contrast**
+
+```{r, eval = FALSE}
+repeated_contrast <- contrast(em_means, method = list(
+  "lark vs neither" = c(-1, 1, 0),      # compares the first level to the second level
+  "neither vs owl" = c(0, -1, 1)))      # compares the second level to the third level
+
+print(repeated_contrast, adjust = "holm")
+```
+
+**Helmert Contrast**
+
+```{r, eval = FALSE}
+helmert_contrast <- repeated_contrast <- contrast(em_means, method = list(
+  "lark vs overall effect later levels" = c(-1, 0.5, 0.5), # first vs. overall effect later levels
+  "neither vs overall effect later levels" = c(0, -1, 1))) # second vs. overall effect later levels
+
+print(helmert_contrast, adjust = "holm")
+```
+
+**Further explanation for coding contrasts**
+
+-   Use zero (0) for any level excluded from a contrast.\
+-   Use negative values for baselin.\
+-   Use positive values for "treatment" group.\
+-   The sum of values in every contrast needs to equal zero.
+
+**Polynomial Contrast**
+
+```{r, eval = FALSE}
+poly_contrasts <- contrast(em_means, method = "poly") #sets up an runs the polynomial contrast
+
+print(poly_contrasts)
+```
+
+**Dunnett Contrast**
+
+```{r, eval = FALSE}
+# Dunnet contrast which will compare a "reference condition" to each of the other conditions.
+
+dunnett_contrasts <- contrast(em_means, method = "trt.vs.ctrl", ref = "lark")
+# change "lark" to the name of the reference/control group/condition.
+
+print(dunnett_contrasts)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Six**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/evaluatemodel.png){width="240" height="50"}
+
+Use the code below to evaluate both normality and homogeneity of variance.
+
+```{r, eval = FALSE}
+#testing normality, looking at normal distribution of residuals from the model.
+residuals <- residuals(anova_result) #pulls residuals from the model
+
+# produce QQ-Plot
+qqPlot(residuals) #produces a qq-plot of residuals
+
+# produce histogram of residuals
+hist(residuals, breaks = 20, main = "Histogram of Residuals", xlab = "Residuals", col = "lightblue") 
+
+# Shapiro test on residuals
+shapiro.test(residuals) #Shapiro test for residuals
+
+# testing homogeneity of variance
+leveneTest(alert ~ group, mydata)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Seven (Optional)**
+
+Researchers from another lab decided to try and replicate these findings.\
+Load the data file "earlybird_replication.csv".\
+Run the analysis using a one-way independent ANOVA.
+Remember to ask for a box plot.\
+You can re-use the code from exercise four.
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 5: One-Way ANOVA (Repeated)**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+We need to call any packages!
+
+```{r, eval = FALSE}
+library(tidyverse)
+library(broom)
+library(afex)
+library(emmeans)
+library(car)
+```
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/importdata.png){width="240" height="50"}
+
+Import the `memory.csv` data set.
+
+------------------------------------------------------------------------
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+head(mydata)
+names(mydata)
+summary(mydata)
+```
+
+The data set does not appear to be in long/tidy form.\
+We need to change that using `pivot_longer`.
+We will create a new version of the data but in long format.
+
+```{r, eval = FALSE}
+#it looks like the data are not in long format. we need to fix that.
+mydata_long <- mydata %>%                             # creates a new object called mydata_long
+  pivot_longer(cols = c(year1, year2, year3, year4),  # the existing column names for the IV
+               names_to = "time",                     # the name of your independent variable
+               values_to = "score")                   # the name of you dependent variable
+```
+
+We need to code our variables.\
+Any categorical variable needs to be set-up as a factor (factor) and any scale/numerical variables need to be set-up as a numeric value (as.numeric).\
+This is an important step because it could cause issues later if missed.
+
+```{r, eval = FALSE}
+# we need to make sure any categorical variables are coded as a "factor" 
+# and any scale variables are coded as "numeric"
+mydata_long$time = factor(mydata_long$time) #turns time into a factor
+mydata_long$score = as.numeric(mydata_long$score) #turns score into numeric
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+Adapt the code to produce descriptive stats in the same way you have done previously.\
+\*Hint: Use `mydata_long` as your data set.
+
+```{r, eval = FALSE}
+descriptives <- NULL %>%                       # Which data set will you use?
+  group_by(NULL) %>%                          # what should you split the file by?
+  summarise(mean = mean(NULL), sd = sd(NULL)) # mean and standard deviation of the dependent variable
+
+view(NULL)
+```
+
+Let's also produce a violin plot to visually present the data.
+
+```{r, eval = FALSE}
+ggplot(mydata_long, aes(x = time, y = score, fill = time)) +
+  geom_violin(trim = FALSE) +  # violin plot without trimming tails
+  geom_boxplot(width = 0.1, color = "black", alpha = 0.5) +  # overlay a boxplot for additional summary statistics
+  theme_classic() +  # Classic theme
+  labs(title = "Violin Plot of Memory Score by Group",  # add a title
+       x = "Time Point",  # x-axis label
+       y = "Memory Score")  # y-axis label
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Four**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Run a one-way repeated ANOVA comparing memory score across the four time points (year1, year2, year3, year4).\
+Adapt the code below.
+Change `NULL` to the relevant variables/information
+
+```{r, eval = FALSE}
+anova_result <- aov_ez(id = "NULL",
+                       dv = "NULL",
+                       within = "NULL",
+                       type = 3,
+                       include_aov = TRUE,
+                       data = NULL)
+
+# just some code to help tidy the output
+anova_result_output <- (anova_result$anova_table) %>%
+  tidy()
+view(anova_result_output)
+
+# we need eta squared for the effect size
+library(effectsize)
+eta_squared(anova_result, partial = FALSE) # asks for eta square
+```
+
+We might also want to `print()` the ANOVA results.
+This is because we can see if a Greenhouse-Geisser correction has been applied.\
+You can check this using two methods:\
+1.
+If the degrees of freedom in the ANOVA output are not whole numbers, and have two decimal places then the assumption of Sphericity was not met and the model has automatically adjusted to account for this.\
+2.
+You can use the code below to `print()` the model and it will tell you if any correction was applied.
+
+```{r, eval = FALSE}
+print(anova_result)  # prints the ANOVA result to the console (bottom left panel)
+```
+
+Once you have looked at the ANOVA output and interpreted, if there is a significant difference you should run planned or post-hoc comparisons.\
+For today's example, we want to use a planned contrast.
+
+First we need to pull out the `emmeans()`.\
+Change `NULL` to the independent variable in the model: `time`.
+
+```{r, eval = FALSE}
+# for any contrasts or post-hocs we need emmeans
+em_means <- emmeans(anova_result, ~ NULL)   # NULL should be the independent variable.
+```
+
+Now let's run the code for a polynomial contrast.
+
+```{r, eval = FALSE}
+#let's run a polynomial contrast
+poly_contrasts <- contrast(em_means, method = "poly") #sets up an runs the polynomial contrast
+
+print(poly_contrasts)
+```
+
+It might help to visualise this effect.\
+Maybe a line chart could help...
+
+```{r, eval = FALSE}
+#let's visualise the data to help our interpretation
+ggplot(mydata_long, aes(x = time, y = score, fill = time)) +
+  stat_summary(fun = mean, geom = "line", color = "black", size = 1, aes(group = 1)) +  # line for mean
+  theme_classic() +
+  labs(title = "Plot of Memory Score Across Time",  # add a title
+       x = "Time Point",  # X-axis label
+       y = "Memory Score")  # Y-axis label
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Five**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Ordinarily we wouldn't run multiple analyses on the same data set (this is considered dodgy and is known as p-hacking).\
+But, for education purposes I'm going to ask you to break the rules and re-analyse the same data, this time adding a covariate.
+
+You have five `NULL` values to change.\
+Set the covariate to `education` which is the number of years of education.\
+As this is a scale variable (not categorical), set `factorize = FALSE`.
+
+```{r, eval = FALSE}
+# run the ANOVA model but this time with a covariate
+# it is now an ANCOVA
+# there is a `c` in the object name, it says ancova not anova
+ancova_result <- aov_ez(id = "NULL",
+                       dv = "NULL",
+                       within = "NULL",
+                       covariate = "NULL",
+                       factorize = FALSE,
+                       type = 3,
+                       include_aov = TRUE,
+                       data = NULL)
+
+print(ancova_result)  # with a covariate in the model it is easier to just print
+
+# we need eta squared for the effect size
+library(effectsize)
+eta_squared(ancova_result, partial = FALSE) #ask for eta square
+```
+
+We can also run polynomial contrasts on this model too.\
+Remember it is now called `ancova_result` and not `anova_result`.\
+That sneaky little c is in the ANCOVA model.
+
+```{r, eval = FALSE}
+# for any contrasts or post-hocs we need emmeans
+em_means <- emmeans(ancova_result, ~ time) # note ancova_result not anova_result
+
+# let's run a polynomial contrast
+poly_contrasts <- contrast(em_means, method = "poly") #sets up an runs the polynomial contrast
+
+print(poly_contrasts)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Six**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/evaluatemodel.png){width="240" height="50"}
+
+Use the code below to evaluate both normality and homogeneity of variance.\
+This will run it for the `anova_result` model from exercise four.\
+You can just add a `c` into the code to also check for the ANCOVA model.
+
+```{r, eval = FALSE}
+#testing normality, looking at normal distribution of residuals from the model.
+residuals <- residuals(anova_result) #pulls residuals from the model
+
+# produce QQ-Plot
+qqPlot(residuals) #produces a qq-plot of residuals
+
+# produce histogram of residuals
+hist(residuals, breaks = 20, main = "Histogram of Residuals", xlab = "Residuals", col = "lightblue") 
+
+# Shapiro test on residuals
+shapiro.test(residuals) #Shapiro test for residuals
+```
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 6: Factorial ANOVA (Independent)**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+We need to call any packages!
+
+```{r, eval = FALSE}
+library(tidyverse)
+library(afex)
+library(emmeans)
+library(car)
+```
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/importdata.png){width="240" height="50"}
+
+Import the data set.
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+Check the file.
+
+```{r, eval = FALSE}
+# have a quick check of your data file to learn about it.
+head(mydata)
+names(mydata)
+summary(mydata)
+view(mydata)
+```
+
+We need to code our variables.
+
+```{r, eval = FALSE}
+# we need to make sure any categorical variables are coded as a "factor" and any scale variables are coded as "numeric".
+mydata$notification = factor(mydata$notification) #turns variable into a factor
+mydata$usage = factor(mydata$usage, levels = c("rare", "regular", "problematic")) # turns into a factor and orders levels
+mydata$anxiety = as.numeric(mydata$anxiety) # turns variable into numeric
+```
+
+Why did we order the `usage` factor.\
+R will automatically put variables in alphabetical order and so I wanted to change these so they're in the order of lowest to highest usage (i.e. rare, regular, then problematic as third level).
+
+------------------------------------------------------------------------
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+Generate descriptives.\
+As we have a factorial design, we have two categorical variables to include in the `group_by()` function.
+We can also ask for `n()` so we know how many participants are in each group.
+
+```{r, eval = FALSE}
+# we have a factorial design so we need to group by BOTH independent variables
+# we will also ask for n() to tell us about the group sizes
+# we will also start using standard error (se)
+descriptives <- mydata %>%
+  group_by(notification, usage) %>%
+  summarise(m = mean(anxiety), 
+            sd = sd(anxiety),
+            n = n(),
+            se = sd/sqrt(n))
+
+view(descriptives)
+```
+
+A box plot might also be useful.\
+Also try out `ggsave()`.\
+You should find the file in your working directory.
+
+```{r, eval = FALSE}
+#let's also visualise our data with a box plot to see what is going on.
+ggplot(mydata, aes(x = usage, y = anxiety, fill = notification)) +
+  geom_boxplot() +
+  theme_classic()
+
+ggsave("box_plot.jpg") # this will save your boxplot into your working directory, as a .jpg file.
+```
+
+You might prefer a violin plot.
+
+```{r, eval = FALSE}
+# let's also visualise our data with a violin plot to see what is going on.
+ggplot(mydata, aes(x = usage, y = anxiety, fill = notification)) +
+  geom_violin(trim = FALSE, alpha = 0.1) +  # Violin plot without trimming tails
+  geom_boxplot(width = 0.1, color = "black", alpha = 0.5, position = position_dodge(.9)) +  #Overlay a boxplot
+  theme_minimal() +  # Classic theme
+  labs(title = "Violin Plot of Anxiety Scores by Notification and Use",  # Add a title
+       x = "Usage",  # X-axis label
+       y = "Anxiety Score")  # Y-axis label
+
+ggsave("violin_plot.jpg") # this will save your violin plot into your working directory, as a .jpg file.
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Four**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Run a 3x2 factorial ANOVA.
+
+```{r, eval = FALSE}
+#we can run the ANOVA using aov_ez()
+anova_result <- aov_ez(id = "id",
+                        between = c("notification", "usage"), 
+                        dv = "anxiety", 
+                        type = 3,
+                        include_aov = TRUE,
+                        data = mydata)
+
+factorial_output <- summary(anova_result) # this will organise the output ready for viewing
+
+print(factorial_output) # print it to the console
+
+library(effectsize)
+eta_squared(anova_result, partial = TRUE) #ask for partial eta square
+```
+
+**If** the is a significant interaction, we need to break it down.
+A great start point is to plot it.\
+Either use your box plot/violin plot.\
+Or using a line graph is a helpful way to interpret an interaction.
+
+```{r, eval = FALSE}
+#let's plot it first
+interaction.plot(mydata$usage,          # plot the x-axis
+                 mydata$notification,   # plot the different lines
+                 mydata$anxiety,        # state the dependent variable
+                 fun = mean)            # ask for the mean values
+```
+
+Now let's check out what is driving this interaction.
+
+```{r, eval = FALSE}
+# first we need to get the emmeans
+# then we need to ask for cohen's d too
+posthoc_factorial <- emmeans(anova_result, 
+                             pairwise ~ notification| usage, 
+                             adjust = "holm")
+output <-  posthoc_factorial$contrasts %>%
+  summary() %>% 
+  mutate(cohen_d = effectsize::t_to_d(t.ratio, df))
+
+view(output)
+```
+
+There was a significant main effect of usage.\
+We could also interpret this, however, the interaction is the most important thing.\
+If you were to interpret the main effects (where there was no interaction), you can use the exact same code and steps as you used for a one-way ANOVA.
+
+```{r, eval = FALSE}
+# we need emmeans to run post-hocs
+em_means <- emmeans(anova_result, ~ NULLL)  # change NULL to the significant main effect variable...(usage)
+```
+
+Then set-up the pairwise comparisons and decide which alpha level adjustment to use.\
+Pick one from either:\
+1.
+Holm\
+2.
+Bonferroni\
+3.
+Tukey HSD
+
+```{r, eval = FALSE}
+pairwise_contrasts <- contrast(em_means, method = "pairwise") # set up pairwise comparisons
+
+print(pairwise_contrasts, adjust = "holm")                    # applies holm adjustment
+print(pairwise_contrasts, adjust = "bonferroni")              # applies bonf adjustment
+print(pairwise_contrasts, adjust = "tukey")                   # applies tukey adjustment
+```
+
+For future reference, here is the Games-Howell Option.
+
+```{r, eval = FALSE}
+# Games-Howell is an option for post-hocs when you have unequal variances
+games_howell <- mydata %>%
+  games_howell_test(NULL ~ NULL)  # group is the between subjects variable in our data
+
+print(games_howell)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Five**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/evaluatemodel.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+# testing normality, looking at normal distribution of residuals from the model.
+residuals <- residuals(anova_result) #pulls residuals from the model
+qqPlot(residuals) #produces a qq-plot of residuals
+hist(residuals, breaks = 20, main = "Histogram of Residuals", xlab = "Residuals", col = "lightblue") #histogram of residuals
+shapiro.test(residuals) #Shapiro test for residuals
+```
+
+Arghhhhh A VIOLATION.
+is this a problem?\
+Well, Field et al. (2009) notes that an ANOVA is robust to violations of both normality and homogeneity IF...\
+...sample sizes are equal.
+We can check this either by looking back at `n()` with your desscriptives or use the code below to count:
+
+```{r, eval = FALSE}
+mydata %>% count(usage, notification)
+```
+
+Let's not forget homogeneity of variance.
+
+```{r, eval = FALSE}
+# testing homogeneity of variance
+library(car)
+leveneTest(anxiety ~ usage*notification, mydata)
+
+```
+
+------------------------------------------------------------------------
+
+### **Optional Code For Different Figures**
+
+<details>
+
+<summary>Click Here</summary>
+
+```{r, eval = FALSE}
+# Optional code: try out the code below to produce different types of plots.
+# plot 1
+ggplot(mydata, aes(x = usage, y = anxiety, fill = notification)) +
+  geom_boxplot(outlier.shape = NA, color = "black", width = 0.6, 
+               alpha = 0.8, notch = FALSE) +  # Boxplot with black outline and transparency
+  theme_classic(base_size = 16) +  # Classic theme with increased base font size
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 20, face = "bold", color = "black"),  # Centered, bold title
+    axis.title.x = element_text(size = 16, face = "bold", color = "black"),  # Bold and larger x-axis title
+    axis.title.y = element_text(size = 16, face = "bold", color = "black"),  # Bold and larger y-axis title
+    axis.text.x = element_text(size = 14, color = "black"),  # Larger x-axis text
+    axis.text.y = element_text(size = 14, color = "black"),  # Larger y-axis text
+    legend.title = element_text(size = 16, face = "bold", color = "black"),  # Bold legend title
+    legend.text = element_text(size = 14, color = "black"),  # Larger legend text
+    panel.grid.major = element_line(color = "grey85", linetype = "dotted"),  # Light grey dotted major grid lines
+    panel.grid.minor = element_blank(),  # Remove minor grid lines
+    panel.background = element_rect(fill = "white", color = NA),  # White background for the panel
+    plot.background = element_rect(fill = "white", color = NA),  # White background for the entire plot
+    legend.position = "right",  # Position the legend to the right
+    legend.key = element_rect(fill = "white", color = NA)  # White background for legend keys
+  ) +
+  scale_fill_brewer(palette = "Set3") +  # Use a colorblind-friendly palette
+  labs(
+    title = "Box Plot of Anxiety Scores by Usage and Notification Type",  # Clear title
+    x = "Usage Type",  # X-axis label
+    y = "Anxiety Score",  # Y-axis label
+    fill = "Notification Type"  # Legend title
+  ) +
+  coord_flip()  # Optional: Flip coordinates for a horizontal box plot
+
+#plot 2
+ggplot(mydata, aes(x = usage, y = anxiety, fill = notification)) +
+  geom_boxplot(outlier.shape = NA, color = "black", width = 0.6, alpha = 0.7) +  # Boxplot with no outliers and transparency
+  theme_minimal(base_size = 16) +  # Minimal theme with increased base font size
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 24, face = "bold", color = "black"),  # Centered, bold title
+    axis.title.x = element_text(size = 18, face = "bold", color = "black"),  # Bold and larger x-axis title
+    axis.title.y = element_text(size = 18, face = "bold", color = "black"),  # Bold and larger y-axis title
+    axis.text.x = element_text(size = 14, color = "black"),  # Larger x-axis text
+    axis.text.y = element_text(size = 14, color = "black"),  # Larger y-axis text
+    legend.title = element_text(size = 16, face = "bold", color = "black"),  # Bold legend title
+    legend.text = element_text(size = 14, color = "black"),  # Larger legend text
+    panel.grid.major = element_line(color = "grey85", linetype = "dotted"),  # Light grey dotted major grid lines
+    panel.grid.minor = element_blank(),  # Remove minor grid lines
+    panel.background = element_rect(fill = "white", color = NA),  # White background for the panel
+    plot.background = element_rect(fill = "white", color = NA),  # White background for the entire plot
+    legend.position = "right",  # Position the legend to the right
+    legend.key = element_rect(fill = "white", color = NA)  # White background for legend keys
+  ) +
+  scale_fill_manual(values = c("#0072B2", "#D55E00", "#009E73")) +  # Custom color palette for distinction and colorblind friendliness
+  labs(
+    title = "Anxiety Scores by Usage Type and Notification",  # Clear and concise title
+    x = "Usage Type",  # X-axis label
+    y = "Anxiety Score",  # Y-axis label
+    fill = "Notification Type"  # Legend title
+  ) +
+  coord_flip()  # Optional: Flip coordinates for a horizontal box plot
+
+# plot 3
+ggplot(mydata, aes(x = usage, y = anxiety, fill = notification)) +
+  geom_violin(trim = FALSE, alpha = 0.2, color = "black", lwd = 0.1) +  # Smooth violin plot with transparency and black outline
+  geom_boxplot(width = 0.15, color = "black", alpha = 0.5, position = position_dodge(0.9)) +  # Overlay a slim boxplot for additional statistics
+  stat_summary(fun = mean, geom = "point", shape = 20, size = 4, color = "black", position = position_dodge(0.9)) +  # Overlay mean points
+  theme_minimal(base_size = 16) +  # Minimal theme with increased base font size
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 24, face = "bold", color = "black"),  # Centered, bold title
+    axis.title.x = element_text(size = 18, face = "bold", color = "black"),  # Bold and larger x-axis title
+    axis.title.y = element_text(size = 18, face = "bold", color = "black"),  # Bold and larger y-axis title
+    axis.text.x = element_text(size = 14, color = "black"),  # Larger x-axis text
+    axis.text.y = element_text(size = 14, color = "black"),  # Larger y-axis text
+    legend.title = element_text(size = 16, face = "bold", color = "black"),  # Bold legend title
+    legend.text = element_text(size = 14, color = "black"),  # Larger legend text
+    panel.grid.major = element_line(color = "grey85", linetype = "dotted"),  # Light grey dotted major grid lines
+    panel.grid.minor = element_blank(),  # Remove minor grid lines
+    panel.background = element_rect(fill = "white", color = NA),  # White background for the panel
+    plot.background = element_rect(fill = "white", color = NA),  # White background for the entire plot
+    legend.position = "right",  # Position the legend to the right
+    legend.key = element_rect(fill = "white", color = NA)  # White background for legend keys
+  ) +
+  scale_fill_manual(values = c("#0072B2", "#D55E00", "#009E73")) +  # Custom color palette for distinction and colorblind friendliness
+  labs(
+    title = "Anxiety Scores by Usage Type and Notification",  # Clear and concise title
+    x = "Usage Type",  # X-axis label
+    y = "Anxiety Score",  # Y-axis label
+    fill = "Notification Type"  # Legend title
+  )
+```
+
+</details>
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 7: Factorial ANOVA (Repeated)**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+Load relevant packages and import this week's data file.
+
+```{r, eval = FALSE}
+library(tidyverse)
+library(afex)
+library(emmeans)
+library(car)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+Check the file.
+
+```{r, eval = FALSE}
+# have a quick check of your data file to learn about it.
+head(mydata)
+names(mydata)
+summary(mydata)
+view(mydata)
+```
+
+That file does not look very tidy...
+
+```{r, eval = FALSE}
+#it looks like the data are not in long tidy format. we need to fix that.
+mydata_long <- mydata %>%
+  pivot_longer(
+    cols = starts_with("before") | starts_with("after"), # columns to pivot, anything that starts with "before" or "after"
+    names_to = c("time", "exercise"), # names of new columns
+    names_pattern = "(before|after)_(run|swim)", # pattern to separate columns
+    values_to = "wellbeing" # Name of the value column
+  )
+
+view(mydata_long) # take a look at what the above code has done. nice and tidy!
+```
+
+Recode any variables as necessary.
+
+```{r, eval = FALSE}
+#we need to make sure any categorical variables are coded as a "factor" and any scale variables are coded as "numeric".
+mydata_long$time = factor(mydata_long$time, levels = c("before", "after")) #turns time into a factor, changes level.
+mydata_long$exercise = factor(mydata_long$exercise) #turns exercise into a factor
+mydata_long$wellbeing = as.numeric(mydata_long$wellbeing) #turns wellbeing score into numeric
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+Generate descriptives.\
+As we have a factorial design, we have two categorical variables to include in the `group_by()` function.
+We can also ask for `n()` so we know how many participants are in each group.
+
+```{r, eval = FALSE}
+# we have a factorial design so we need to group by BOTH independent variables
+# we will also ask for n() to tell us about the group sizes
+# we will also start using standard error (se)
+descriptives <- mydata_long %>%
+  group_by(time, exercise) %>%
+  summarise(m = mean(wellbeing), 
+            sd = sd(wellbeing), 
+            n = n(),
+            se = sd/sqrt(n))
+
+view(descriptives)
+```
+
+How would you amend the code above to look at the descriptives comparing before vs. after, ignoring exercise type?
+
+A box plot might also be useful.\
+Also try out `ggsave()`.\
+You should find the file in your working directory.
+
+```{r, eval = FALSE}
+#let's also visualise our data with a box plot to see what is going on.
+ggplot(mydata_long, aes(x = time, y = wellbeing, fill = exercise)) +
+  geom_boxplot() +
+  theme_classic()
+
+ggsave("box_plot.jpg")
+```
+
+Let's try a bar chart...\
+Don't worry about understanding all of this code.\
+You'll have a bit of practice with ggplot in a future workshop.
+
+```{r, eval = FALSE}
+#don't let this code scare you. But run it to produce a bar chart!
+# you'll learn more about ggplot soon.
+bar_chart <- ggplot(mydata_long, aes(x = time, y = wellbeing, fill = exercise, group = interaction(time, exercise))) + 
+  stat_summary(
+    fun = mean,          
+    geom = "bar",          
+    position = position_dodge(width = 0.9)
+  ) +
+  stat_summary(
+    fun.data = mean_se,   # Calculate mean and standard error for error bars
+    geom = "errorbar",    # Use error bars
+    width = 0.2,          
+    position = position_dodge(width = 0.9)
+  ) + 
+  scale_y_continuous(breaks = seq(0, 30, 2)) +  # Set breaks without limiting the scale
+  coord_cartesian(ylim = c(0, 22)) +  # Zoom into the y-axis range from 0 to 20
+  xlab("Time") + 
+  ylab("Mean Wellbeing Score") + 
+  scale_fill_brewer(palette = "Dark2") +  
+  theme_classic(base_size = 12, base_family = "Arial") +  
+  theme(
+    legend.position = "bottom",  
+    legend.title = element_blank(),
+    legend.key = element_rect(fill = "white", colour = "white")
+  ) +
+  labs(
+    caption = "Figure 1. Mean wellbeing scores before and after different exercises. Error bars represent standard errors."
+  )
+
+print(bar_chart)
+
+ggsave("vbar_chart.jpg") # this will save your bar chart plot into your working directory, as a .jpg file.
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Four**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Run a 2x2 factorial ANOVA.
+
+```{r, eval = FALSE}
+#we can run the ANOVA using aov_ez()
+anova_result <- aov_ez(id = "id",
+                       within = c("time", "exercise"), 
+                       dv = "wellbeing", 
+                       type = 3,
+                       data = mydata_long)
+
+factorial_output <- summary(anova_result)
+print(factorial_output)
+
+library(effectsize)
+eta_squared(anova_result, partial = TRUE) #ask for partial eta square
+```
+
+**If** the is a significant interaction, we need to break it down.
+A great start point is to plot it.\
+Either use your box plot/violin plot.\
+Or using a line graph is a helpful way to interpret an interaction.
+
+```{r, eval = FALSE}
+#let's plot it first
+interaction.plot(mydata_long$exercise,  # plot the x-axis
+                 mydata_long$time,      # plot the different lines
+                 mydata_long$wellbeing, # state the dependent variable
+                 fun = mean)            # ask for the mean values
+```
+
+Now let's check out what is driving this interaction.
+
+```{r, eval = FALSE}
+# it looks pretty clear that wellbeing score is higher after compared to before. 
+# but what sees the biggest increase, running or swimming?
+# to do this we need to compare running vs. swimming, at the different time levels
+# this is the simple effects analysis.
+# we need `pairwise ~ WHAT WE WANT TO COMPARE | WHAT VARIABLE WE WANT TO LOOK ACROSS`...
+# or `pairwise ~ exercise| time`,  see below:
+
+#first we need to get the emmeans
+#then we need to ask for cohen's d too
+posthoc_factorial <- emmeans(anova_result, 
+                             pairwise ~ exercise| time, 
+                             adjust = "holm")
+output <-  posthoc_factorial$contrasts %>%
+  summary() %>% 
+  mutate(cohen_d = effectsize::t_to_d(t.ratio, df))
+
+view(output)
+```
+
+What about sphericity?
+Well, an important announcement:\
+SPHERICITY DOES NOT APPLY WHEN THERE ARE ONLY TWO LEVELS\
+This was a 2x2 design.
+had it been 3x2 or 3x3 then we'd need to consider Sphericity... ...which you will do next week.
+
+------------------------------------------------------------------------
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/evaluatemodel.png){width="240" height="50"}
+
+Evaluate the model...
+
+```{r, eval = FALSE}
+# testing normality, looking at normal distribution of residuals from the model.
+residuals <- residuals(anova_result) #pulls residuals from the model
+qqPlot(residuals) #produces a qq-plot of residuals
+hist(residuals, breaks = 20, main = "Histogram of Residuals", xlab = "Residuals", col = "lightblue") #histogram of residuals
+shapiro.test(residuals) #Shapiro test for residuals
+```
+
+### **Exercise Five**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/communicate.png){width="240" height="50"}
+
+Take the time to write up your results.\
+Use APA format and remember to present descriptive statistics.\
+It is important to practice this because you'll soon be doing this for your lab report!
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 8: Factorial ANOVA (Mixed)**
+
+------------------------------------------------------------------------
+
+Download the .csv file from Moodle and conduct the appropriate analysis, following the process below:
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/analysis_process.png){width="300" height="500"}
+
+```{r, eval = FALSE}
+library(tidyverse)
+library(afex)
+library(emmeans)
+library(broom)
+
+#it looks like the data are not in long or tidy format. we need to fix that.
+mydata_long <- mydata %>%
+  pivot_longer(
+    cols = word_list:problem_solving,
+    names_to = "task_type",
+    values_to = "score")
+
+#we need to make sure any categorical variables are coded as a "factor" and any scale variables are coded as "numeric".
+mydata_long$music = factor(mydata_long$music, levels = c("silence", "classical", "pop")) #turns music into a factor
+mydata_long$task_type = factor(mydata_long$task_type, levels = c("word_list", "comprehension", "problem_solving")) #turns tasktype into a factor
+mydata_long$score = as.numeric(mydata_long$score) #turns score into numeric
+```
+
+Replace NULL where necessary.\
+You have used this code previously.
+
+```{r, eval = FALSE}
+descriptives <- NULL %>%
+  group_by(NULL, NULL) %>%
+  summarise(m = mean(NULL),
+            sd = sd(NULL),
+            n = n(),
+            se = sd/sqrt(n))
+```
+
+```{r, eval = FALSE}
+ggplot(mydata_long, aes(x = NULL, y = NULL, fill = NULL)) +
+  geom_boxplot() +
+  theme_classic()
+```
+
+```{r, eval = FALSE}
+anova_result <- aov_ez(id = "NULL",
+                       within = "NULL",
+                       between = "NULL",
+                       dv = "NULL", 
+                       type = 3,
+                       data = NULL)
+
+#tidy the output
+anova_result_output <- (anova_result$anova_table) %>%
+  tidy()
+view(anova_result_output)
+
+#what if you want the sphericity information
+factorial_output <- summary(anova_result)
+print(factorial_output)
+```
+
+```{r, eval = FALSE}
+interaction.plot(mydata_long$NULL,      # plot the x-axis
+                 mydata_long$NULL,      # plot the different lines
+                 mydata_long$NULL,      # state the dependent variable
+                 fun = mean)            # ask for the mean values
+
+emmeans_task <- emmeans(anova_result, ~ NULL | NULL)
+contrast_task <- contrast(emmeans_task, method = "pairwise", adjust = "holm")
+summary(contrast_task)
+```
+
+```{r, eval = FALSE}
+#testing normality, looking at normal distribution of residuals from the model.
+residuals <- residuals(anova_result) #pulls residuals from the model
+qqPlot(residuals) #produces a qq-plot of residuals
+hist(residuals, breaks = 20, main = "Histogram of Residuals", xlab = "Residuals", col = "lightblue") #histogram of residuals
+shapiro.test(residuals) #Shapiro test for residuals
+
+library(car)
+leveneTest(score ~ music, mydata_long)
+```
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 9: Data Visualisation**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+Load relevant packages and import this week's data file.
+
+```{r, eval = FALSE}
+library(tidyverse)
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+Check the file and code any variables.
+
+```{r, eval = FALSE}
+# have a quick check of your data file to learn about it.
+#have a quick check of your data file to learn about it.
+head(mydata)
+names(mydata)
+summary(mydata)
+
+#we need to code variables and re-order them to a meaningful order.
+mydata$time = factor(mydata$time, levels = c("morning", "afternoon")) #turns into a factor
+mydata$drink = factor(mydata$drink, levels = c("coffee", "tea")) #turns into a factor
+mydata$score = as.numeric(mydata$score) #turns into numeric
+```
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+A note on ggplot2:\
+ggplot2 is a package but comes withing the tidyverse package bundle.\
+ggplot2 is a very powerful data visualisation package.\
+This workshop will only give you an introduction to the basics...\
+...particularly the style of figures you might use for lab report one.\
+However, there is so much more you can do with ggplot2 and there are lots of resources online.
+
+```{r, eval = FALSE}
+# step by step
+# layer 1: specify data and aesthetics using aes()
+ggplot(mydata, aes(x = NULL, y = NULL, fill = NULL))
+```
+
+`+`
+
+```{r, eval = FALSE}
+# layer 2: present the values using stat_summary()
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(), color = "black")
+```
+
+`+`
+
+```{r, eval = FALSE}
+# layer 3: add error bars
+  stat_summary(fun.data = mean_se, geom = "errorbar", 
+               position = position_dodge(0.9), width = 0.25) 
+```
+
+`+`
+
+```{r, eval = FALSE}
+# layer 4: labels with labs()
+labs(
+    title = NULL,   # leave this as NULL because APA figures do not use titles.
+    x = "NULL",  
+    y = "NULL")
+```
+
+`+`
+
+```{r, eval = FALSE}
+# layer 5: group/condition names and colours
+scale_fill_manual(values = c("morning" = "slategray4", "afternoon" = "slategray2"), 
+                    labels = c("Morning", "Afternoon")) +
+scale_x_discrete(labels = c("coffee" = "Coffee", "tea" = "Tea"))
+```
+
+`+`
+
+```{r, eval = FALSE}
+# layer 6: add the theme to tidy up
+theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(color = "black", fill = NA, size = 1),
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.title = element_text(face = "bold"),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold"))
+```
+
+You can also run the code below to produce different types of figures.\
+You might choose to use this code when you come to write your lab report.
+
+```{r, eval = FALSE}
+# violin plot (with box plot) complete code example
+# you might use and tweak this code for your lab report.
+ggplot(mydata, aes(x = drink, y = score, fill = time)) +
+  geom_violin(trim = TRUE, scale = "area", alpha = 0.2, color = "white", size = 0.1) +
+  geom_boxplot(width = 0.2, position = position_dodge(0.9), color = "black", alpha = 0.8, outlier.shape = 1) +
+  labs(
+    title = NULL,
+    x = "Drink",
+    y = "Productivity Score",
+    fill = "Time of Day") +  # legend title
+  scale_fill_manual(
+    values = c("morning" = "#1f77b4", "afternoon" = "#ff7f0e"),
+    labels = c("Morning", "Afternoon")) +  # legend labels
+  scale_x_discrete(
+    labels = c("coffee" = "Coffee", "tea" = "Tea")) +  # x-axis labels
+  theme_classic(base_size = 14) +
+  theme(
+    panel.grid.major = element_blank(),  # Remove major gridlines
+    panel.grid.minor = element_blank(),  # Remove minor gridlines
+    panel.border = element_rect(color = "black", fill = NA, size = 1),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    legend.title = element_text(face = "bold"),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold"),
+    axis.text.y = element_text(size = 12, face = "bold"))  # Added bold to y-axis text
+
+```
+
+```{r, eval = FALSE}
+#  box plot code example
+# you might use and tweak this code for your lab report.
+ggplot(mydata, aes(x = drink, y = score, fill = time)) +
+  geom_boxplot(
+    width = 0.5,
+    alpha = 0.7,
+    color = "black",
+    size = 0.2) +
+  # Customizing labels and themes
+  labs(
+    title = NULL,
+    x = "Drink Type",
+    y = "Productivity Score",
+    fill = "Time") +  # legend title)
+  scale_fill_manual(
+    values = c("morning" = "#1f77b4", "afternoon" = "#ff7f0e"),
+    labels = c("Morning", "Afternoon")) +
+  scale_x_discrete(labels = c("coffee" = "Coffee", "tea" = "Tea")) +  # x-axis labels
+    # Ensure the y-axis starts at zero
+  coord_cartesian(ylim = c(0, NA)) +
+  theme_minimal(base_size = 16) +
+  theme(
+    panel.grid.major = element_blank(),  # Remove major gridlines
+    panel.grid.minor = element_blank(),  # Remove minor gridlines
+    panel.border = element_rect(color = "gray80", fill = NA, size = 0.5),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 18),
+    legend.title = element_text(face = "bold", size = 14),  
+    legend.position = "top",
+    axis.title.x = element_text(face = "bold", size = 14),
+    axis.title.y = element_text(face = "bold", size = 14),
+    axis.text.x = element_text(size = 12, face = "bold"), 
+    axis.text.y = element_text(size = 12))
+```
+
+------------------------------------------------------------------------
+
+Below are the figures you should have been able to produce:
+
+<details>
+
+<summary>Click Here</summary>
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/barchart.jpg){width="540" height="450"}
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/violinplot.jpg){width="540" height="450"}
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/boxplot.jpg){width="540" height="450"}
+
+</details>
+
+------------------------------------------------------------------------
+
+#### Part Two of this Workshop does not use R.
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+------------------------------------------------------------------------
+
+# **Workshop 10: Non-Parametric Analyses**
+
+------------------------------------------------------------------------
+
+### **Exercise One**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+Load relevant packages and import this week's data file.
+
+```{r, eval = FALSE}
+library(tidyverse)
+library(rstatix)
+```
+
+### **Exercise Two**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+Check the file.
+
+```{r, eval = FALSE}
+# have a quick check of your data file to learn about it.
+head(mydata)
+names(mydata)
+summary(mydata)
+view(mydata)
+```
+
+That file does not look very tidy...
+
+```{r, eval = FALSE}
+#it looks like the data are not in long tidy format. we need to fix that.
+mydata_long <- mydata %>%
+  pivot_longer(cols = c(before_uni:after_uni),
+               names_to = "time_point",
+               values_to = "average_exercise")
+
+view(mydata_long) # take a look at what the above code has done. nice and tidy!
+```
+
+Recode any variables as necessary.
+
+```{r, eval = FALSE}
+mydata_long$time_point = factor(mydata_long$time_point, levels = c("before_uni", "during_uni", "after_uni"))
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Three**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+Generate descriptives.\
+For non-parametric approaches you should ask for the median.
+Change `NULL` in the code below.
+
+```{r, eval = FALSE}
+descriptives <- mydata_long %>%
+  group_by(NULL) %>%
+  summarise(median = median(NULL),
+            sd = sd(NULL),
+            n = n())
+
+view(descriptives)
+```
+
+A violin plot with a box plot might also be useful.
+Particularly as box plots show the median and the density plot (the violin) can show us the distribution (i.e to see that the data are not normally distributed)
+
+```{r, eval = FALSE}
+ggplot(mydata_long, aes(x = time_point, y = average_exercise)) +
+  geom_violin() +
+  geom_boxplot(width = 0.2) +
+  theme_classic()
+```
+
+------------------------------------------------------------------------
+
+### **Exercise Four**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/modeldata.png){width="240" height="50"}
+
+Run a Friedman's ANOVA
+
+```{r, eval = FALSE}
+#run a Friedman's ANOVA
+mydata_long %>%
+  friedman_test(average_exercise ~ time_point | id)
+```
+
+If there is a significant main effect, we can run post-hocs using a Wilcoxon Signed Rank test.
+These will work in the same way as pairwise comparisons (which you ran for an ANOVA)
+
+```{r, eval = FALSE}
+#if there is a significant main effect, we need to run post-hocs
+mydata_long %>%
+  pairwise_wilcox_test(
+    average_exercise ~ time_point,
+    paired = TRUE, 
+    p.adjust.method = "holm")
+```
+
+------------------------------------------------------------------------
+
+#### END OF WORKSHOP
+
+<details>
+
+<summary>Code for Running a Kruskal-Wallis and Mann-Whitney can be found here</summary>
+
+</details>
+
+------------------------------------------------------------------------
+
+# **Workshop 14: Handling Questionnaire Data**
+
+------------------------------------------------------------------------
+
+## **Tasks**
+
+1.  Work in excel to remove any rows and columns that are not needed.
+
+2.  Remove participants who did not complete the study properly.
+
+3.  Check for any unusual responses.
+
+4.  Clean the data file variable names.
+
+5.  Check for missing responses across each participant.
+
+6.  Re-code any factor/categorical variables.
+
+7.  Reverse code any negative items.
+
+8.  Calculate the mean scores for the two questionnaires.
+
+9.  Produce basic descriptive statistics for each questionnaire.
+
+------------------------------------------------------------------------
+
+## **1.Work in excel to remove any rows and columns that are not needed**
+
+Open the `anxiety_procrastination.csv` file (which can be found on Moodle).
+
+This file contains data from participants who completed two questionnaires. The first was an academic anxiety questionnaire from Cassady et al. (2019) and the second was the general procrastination scale (short form) from Sirios et al. (2019). Participants were also asked their age and if they were a current UK university student.
+
+Have a look at the excel file and make sure you understand what each column shows.
+
+- Column `C` includes progress data for the online study (% completed).
+- Column `E` tells us if a participant completed the online study (1 = Yes, 0 = No).
+- Column `F` or `Q1 age` tells us the participant age.
+- Column `G` or `Q2 uni` tells us if the participant is a current UK university student (1 = No, 2 = Yes).
+- Columns `H` to `R` are the Likert responses to questions on the academic anxiety scale (scale 1 - 5).
+- Columns `S` to `AA` are the Likert responses to questions on the general procrastination scale (scale 1 - 5).
+
+We need to remove any redundant columns or rows in the data file. This means any columns or rows which we don't need for the analysis.
+
+- Remove columns `A` and `B`.
+  
+  -**Why?** This just contains the start and end date/time for the participant and we do not need the analysis.
+- Remove rows `2` and `3`.
+  
+  -**Why?** These contain meta-data in the file and we do not need them for the analysis.
+
+To remove the column or row, click on the letter or number and right click then press `delete`
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/excel1.jpg){width="540" height="450"}
+
+## **2.  Remove participants who did not complete the study properly**
+
+In excel we can sort the column which shows participant progress. Click on this column (now column `A`) and sort it. 
+
+***
+
+1. Click on `A`
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/excel2.jpg){width="240" height="450"}
+
+*** 
+
+2. Click the `Data` tab.
+
+***
+
+3. Click the `Sort Smallest to Largest` button.
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/excel3.jpg){width="540" height="200"}
+
+***
+
+4. Click sort with `expand the selection` selected.
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/excel4.jpg){width="340" height="150"}
+
+***
+
+5. Delete any rows of participants who did not complete 100% of the study. Make a note on how many there were as you would want to report this in your lab report.
+
+## **3.  Check for any unusual responses**
+
+Look at the participant responses. What do you notice in the `Q1 age` column? Make any changes to the data file to make sure all of the ages are in the same format.
+
+<details>
+
+<summary>Hint</summary>
+
+One of the participants has entered the age as `19 years`. Just change this so it says `19`
+
+</details>  
+
+
+**Once you have done this, save the excel file as a .csv file called `anxiety_procrastination2` and save it somewhere you can easily find it. You will need to save it in your RStudio working directory (see next step!)**
+
+## **4.  Clean the data file variable names**
+
+Now we have tidying things up in excel, it is time to move over to RStudio.
+
+Load the following libraries, set your working directory, and import the data file.
+
+```{r, eval = FALSE}
+install.packages("janitor")
+install.packages("psych")
+library(tidyverse)
+library(janitor)
+library(psych)
+
+mydata <- read_csv("anxiety_procrastination2.csv")
+```
+
+This next bit of code will tidy up our data file in RStudio. We will also create a new object to work with called `clean_mydata`.
+
+```{r, eval = FALSE}
+# clean_names will:
+#(1) change any capital letters to lowercase, 
+#(2) remove any spaces and replace with an underscore,
+
+clean_mydata <- mydata %>%
+  clean_names()
+```
+
+## **5.  Check for missing responses across each participant**
+
+Sometimes a participant might accidentally miss a question. We need to check for this to see how many participants might have missing data. 
+
+```{r, eval = FALSE}
+clean_mydata <- clean_mydata %>%               #this will make sure a new column is added.
+  mutate(missing_count = rowSums(is.na(.)))    #this will count up the missing responses.
+
+view(clean_mydata)
+```
+
+When you `view` the data it will open in a new tab. Scroll to the very end and you'll see there is a new column called `missing_count`. What has happened? The code above created a new column with the sum of the total number of missing responses.
+
+**How many participants had missing data?**
+
+**How many responses did they each miss?**
+
+Because the number of missing responses is quite low we can move on. But if you have a participant who has missed more than 25% of their responses, you might consider removing them from the data file.
+
+## **6.  Re-code any factor/categorical variables**
+
+There is one categorical variable. `q2_uni` is a `No` and `Yes` question ("Are you a current UK University student?")
+
+Run this code to re-code the variable:
+
+```{r, eval = FALSE}
+clean_mydata$q2_uni <- factor(clean_mydata$q2_uni)
+```
+
+This code will take the `q2_uni` variable and set it as `factor`.
+
+## **7.  Reverse code any negative items**
+
+The general procrastination scale has three reverse coded items:
+
+- `q5_3`
+- `q5_5`
+- `q5_6`
+
+We need to reverse code these so that the Likert scores are swapped. This means:
+
+`5` becomes a `1`  
+
+`4` becomes a `2`  
+
+`3` stays as a `3`  
+
+`2` becomes a `4`  
+
+`1` becomes a `5`  
+
+If you are unsure what is meant by a negative or reverse coded item, check the lecture slides.
+
+Run the following code:
+
+```{r, eval = FALSE}
+# we need to reverse code 3 items for the procrastination questionnaire
+clean_mydata$q5_3 <- 6 - clean_mydata$q5_3
+clean_mydata$q5_5 <- 6 - clean_mydata$q5_5
+clean_mydata$q5_6 <- 6 - clean_mydata$q5_6
+
+# we use the number 6 because there were 5 response options
+# if you had a 7 point Likert scale, this should say 8.
+# if you had a 9 point Likert scale, this would say 10.
+#change the number so it is one more than the number of Likert options.
+```
+
+## **8. Calculate the mean scores for the two questionnaires**
+
+At the moment we have a cleaned data file with all of the individual question responses. However, for each participant we need a `mean` score for each questionnaire/scale.
+
+For each participant we need:
+
+- The overall (`mean`) academic anxiety questionnaire score.
+
+- The overall (`mean`) procrastination questionnaire score.
+
+We can do this and create new variables for these means using the code below.
+
+```{r, eval = FALSE}
+# Select and calculate the anxiety scale score
+clean_mydata <- clean_mydata %>%
+  mutate(anxiety = rowMeans(select(., starts_with("q4_")), na.rm = TRUE))
+
+# Select and calculate the procrastination scale score
+clean_mydata <- clean_mydata %>%
+  mutate(procrastination = rowMeans(select(., starts_with("q5_")), na.rm = TRUE))
+```
+
+Let's explain this code bit by bit so you can adapt it again in the future:
+
+`clean_mydata <- clean_mydata %>%` to specify which data file to create the new column.
+
+`mutate()` will add the new column.
+
+`anxiety =` is what you want to call the new column.
+
+`rowMeans` will calculate the means across items/questions.
+
+`select` is so we will only do this for a certain number of items.
+
+`starts_with("q4_")` is so any variable that begins with `q4_` is counted (e.g., `q4_1` through to `q4_11`).
+
+`na.rm = TRUE` is important as it will tell R to ignore any missing values when calculating the mean.
+
+## **9. Produce basic descriptive statistics for each questionnaire**
+
+If you view your data file, you should see at the very end (final two columns) you should have the mean anxiety and procrastination scores for each participant. To view the data file, just run:
+
+```{r, eval = FALSE}
+# Select and calculate the anxiety scale score
+view(clean_mydata)
+```
+
+Across our sample, let's just finish by looking at some descriptive statistics.
+
+Run the following code and looks through and interpret the output.
+
+```{r, eval = FALSE}
+clean_mydata %>%                                     # which data file 
+  select(q1_age, anxiety, procrastination) %>%       # select what variables to include
+  describe() %>%                                     # describe the data
+  select(n, mean, sd, se, min, max)                  # describe() will give us some stats
+
+# optional: try removing the first select() function from the code and see what happens
+clean_mydata %>%                                     # which data file 
+  describe() %>%                                     # describe the data
+  select(n, mean, sd, se, min, max)                  # describe() will give us some stats
+
+#hopefully you will see why we used select() as otherwise it will give us values for every single question.
+#it might be useful to look at every single question, but for today we just wanted the mean values for the questionnaires.
+```
+
+
+## **10. Optional Exercise**
+
+Working more with data:
+
+### **Optional Exercise One**
+
+`q2_uni` asks participants "Are you a current UK University student?". Let's say our inclusion criteria stated that we want to only use data from current university students, we then need to filter out anyone who answered No. No = `1` and Yes = `2` for this variable.
+
+```{r, eval = FALSE}
+clean_mydata <- clean_mydata %>%
+  filter(q2_uni == 2)
+
+#filter(q2_uni ==2) will include ONLY participants who 
+```
+# **Workshop 15: Correlations**
+
+### **Exercise One**
+**Packages and Import Data**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/packages.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+#Before doing anything, need to make sure the right packages are installed and open. We will use all of these......
+
+library(tidyverse)
+library(correlation)
+library(gridExtra)
+library(ppcor)
+library(cocor)
+```
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/importdata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+# Now get R to open our dataset
+
+mydata <- read_csv("WS_data_R_optimism.csv")
+
+# To check the data have opened ok, you can view the data...
+
+view(mydata)
+
+```
+
+***
+
+### **Exercise Two**
+**Prepare Data**
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/preparedata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+# Next, we need to tell R which variables are continuous (as.numeric) and which are categorical (as.factor).
+
+# You can check the names of the variables with this...
+
+names(mydata)
+
+mydata$p_num <- as.numeric(mydata$p_num)
+mydata$optimism <- as.numeric(mydata$optimism)
+mydata$positive_SC <- as.numeric(mydata$positive_SC)
+mydata$negative_SC <- as.numeric(mydata$negative_SC)
+mydata$age_years <- as.numeric(mydata$age_years)
+mydata$extra_curr <- as.factor(mydata$extra_curr)
+mydata$reading_age <- as.numeric(mydata$reading_age)
+
+```
+
+***
+
+![](C:/Users/uejt014/OneDrive%20-%20Royal%20Holloway%20University%20of%20London/RHUL/PS2010_R/Materials/ws_code%20book/describedata.png){width="240" height="50"}
+
+```{r, eval = FALSE}
+# Before getting into correlations, we might want a summary of our variables. For the continuous variables, we get descriptives. For the categorical/binary variables, we get frequencies.
+
+summary(mydata)
+
+# If we want to see the descriptives split for different groups, for example, we want to see the descriptives for optimism for extracurricular activities status separately..
+
+descriptives_bygroup <- mydata %>% # Tell R which data set to use.  %>% means "and then" so tells R to move on and do something else
+  group_by(extra_curr) %>% # group_by is telling R to split the data file - put the variable to split by in brackets
+  summarise(mean_optimism = mean(optimism), sd_optimism = sd(optimism)) # Ask for the mean and standard deviation. statistic_calculated = statistic(variable)
+
+# You then need R to "print" - or display - the calculated descriptives in the console window.
+
+print(descriptives_bygroup)
+
+```
+
+### **Exercise Three**
+**Run and interpret Pearson’s correlations (zero order correlations)**
+
+```{r, eval = FALSE}
+# Now we can look at the correlations between these four continuous variables - but we want to mainly focus on the correlations with optimism - our main variable of interest.
+
+mydata %>%
+  dplyr::select(optimism, positive_SC, negative_SC, age_years) %>%
+  correlation(p_adjust = "none")
+
+# In addition to giving you the r and p values, it gives the N, so check that this is correct. To write up the correlation, remember that df = N-2.
+```
+
+***
+
+### **Exercise Four**
+**Creating scatterplots with lines of best fit**
+
+```{r, eval = FALSE}
+# First, let's graph the correlations between "optimism" with life, and the three other continuous variables. You won't see them until after you make them and then ask R to display them. We will make four scatterplots...
+
+# Optimism and positive self compassion
+
+plot1 <- ggplot(mydata, aes(x = positive_SC, y = optimism)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  theme_classic()
+
+# Optimism and negative self compassion
+
+plot2 <- ggplot(mydata, aes(x = negative_SC, y = optimism)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  theme_classic()
+
+# Optimism and age in years
+
+plot3 <- ggplot(mydata, aes(x = age_years, y = optimism)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  theme_classic()
+
+# To see what the plots look like, we need to arrange them in the "Plot" window. Make sure "gridextra" is ticked in the "Packages" window
+
+grid.arrange(plot1, plot2, plot3, ncol = 3)  
+
+# ncol = 3 tells R to put three next to each other
+
+```
+
+***
+
+### **Exercise Five**
+**Run and interpret partial correlations**
+
+```{r, eval = FALSE}
+# Next, let's look at partial correlations, so the three main correlations of interest we just ran, but now controlling for reading age.
+
+# You need to have one set of code for each partial correlation, and make sure "ppcor" is ticked in the "Packages" window.
+
+pcor.test(mydata$optimism, mydata$positive_SC,
+          mydata$reading_age,
+          method = "pearson")
+
+pcor.test(mydata$optimism, mydata$negative_SC,
+          mydata$reading_age,
+          method = "pearson")
+
+pcor.test(mydata$optimism, mydata$age_years,
+          mydata$reading_age,
+          method = "pearson")
+
+```
+
+### **Exercise Six**
+**Statistically comparing correlations**
+
+```{r, eval = FALSE}
+# Final thing is comparing correlations across different groups. For example, is the correlation between satisfaction with life and negative life experiences different when comparing people who are single or in a relationship?
+
+# First, we need to tell R which subgroups within our dataset we want to look at - so identify 0 and 1 from the "relationship" variable, and name each one.
+
+None <- mydata[mydata$extra_curr == "0", ]
+Activities <- mydata[mydata$extra_curr == "1", ]
+
+# Now we run the two correlations - we need to tell R first which subgroup to use from the naming we just did, and which continuous variable to correlate.
+
+cor.test(None$optimism, None$positive_SC,
+         method = "pearson")
+cor.test(Activities$optimism, Activities$positive_SC,
+         method = "pearson")
+
+# To compare the correlations statistically, we need the N and the r for each group. The r value is the final value in the output we just created - the final line, under corr.
+# To get the N for each group, we ran the "summary" earlier, but you can do it again to save scrolling. 
+
+summary(mydata)
+
+# Now we can statistically compare our r values. Make a note of which group you consider to be "1" and which is "2". For this, it will be 1 is single and 2 is in a relationship.
+# First, make sure "cocor" is ticked in the "Packages" tab.
+# r1 is the first r-value, in this case 0.2009678
+# r2 is the second r-value, in this case 0.6345603
+# n1 is the first sample size, in this case 73
+# n2 is the second sample size, in this case 77
+# the code looks like this, so just replace the values as needed... cocor.indep.groups(r1, r2, n1, n2)
+
+cocor.indep.groups(0.2009678, 0.6345603, 73, 77)
+
+# Final thing to do - graph these two correlations on the same plot to aid interpretation.
+
+plot_cc <- ggplot(mydata, aes(x = positive_SC, y = optimism, colour = extra_curr)) +
+  geom_point(aes(shape = extra_curr)) +
+  geom_smooth(aes(linetype = extra_curr), method = "lm", se = FALSE) +
+  labs(title = "Positive self compassion vs Optimism by Extra curricular activities",
+       x = "Positive self compassion",
+       y = "Optimism") +
+  theme_classic() +
+  scale_color_manual(values = c("0" = "grey", "1" = "black ")) +
+  scale_linetype_manual(values = c("0" = "solid", "1" = "dashed")) +
+  scale_shape_manual(values = c("0" = 16, "1" = 3))
+
+                     
+print(plot_cc)
+
+# WORKSHOP FINISHED - YAY!!!
+```
+
+***
+
+# **Workshop 16: Multiple Regression with Continuous Variables**
+
+```{r, eval = FALSE}
+# Before doing any analyses, you need to get everything set up and ready...
+
+# Set the working directory -WD- so R knows where the data lives. Do this by going Session > Set working directory > Choose directory
+
+# You can check the working directory...
+
+getwd()
+
+#Before doing anything, need to make sure the right packages are installed and open. We will use all of these......
+
+install.packages(tidyverse)
+install.packages(correlation)
+install.packages(gridExtra)
+
+library(tidyverse)
+library(correlation)
+library(gridExtra)
+
+# Once you have done this, you should see them ticked in the "Packages" list - you can also manually tick the boxes.
+# If you need to install any of these, the code is install.packages("name of package")
+# Make sure you can then see it in the "Packages" list, and call it using library("name of package") or just tick it in the "Packages" list
+
+# Now get R to open our dataset
+
+mydata <- read_csv("WS_data_R_optimism.csv")
+
+# To check the data have opened ok, you can view the data...
+
+view(mydata)
+
+# You can also check the number of participants (obs) and the number of variables in the "Environment" tab.
+
+# Next, we need to tell R which variables are continuous (as.numeric) and which are categorical (as.factor).
+
+# You can check the names of the variables with this...
+
+names(mydata)
+
+mydata$p_num <- as.numeric(mydata$p_num)
+mydata$optimism <- as.numeric(mydata$optimism)
+mydata$positive_SC <- as.numeric(mydata$positive_SC)
+mydata$negative_SC <- as.numeric(mydata$negative_SC)
+mydata$age_years <- as.numeric(mydata$age_years)
+mydata$extra_curr <- as.factor(mydata$extra_curr)
+mydata$reading_age <- as.numeric(mydata$reading_age)
+
+# Before getting into correlations, we might want a summary of our variables. For the continuous variables, we get descriptives. For the categorical/binary variables, we get frequencies.
+
+summary(mydata)
+
+# We should run the zero order correlations for all continuous variables, the outcome variable and the predictors.
+
+mydata %>%
+  dplyr::select(optimism, positive_SC, negative_SC, age_years) %>%
+  correlation(p_adjust = "none")
+
+# In addition to giving you the r and p values, it gives the N, so check that this is correct. To write up the correlation, remember that df = N-2.
+
+# Now, let's run a multiple regression.
+# We have SWL as the outcome variable that we want to predict
+# Then the three wellbeing measures and the number of negative life experiences giving us four continuous predictor variable.
+
+model <- lm(optimism ~ positive_SC + negative_SC + age_years, data = mydata)
+summary(model)
+
+# We then want to create scatterplots to graphically represent any significant predictors (so three)
+
+# Optimism and positive self compassion
+
+plot1 <- ggplot(mydata, aes(x = positive_SC, y = optimism)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  theme_classic()
+
+# Optimism and negative self compassion
+
+plot2 <- ggplot(mydata, aes(x = negative_SC, y = optimism)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  theme_classic()
+
+# Optimism and age in years
+
+plot3 <- ggplot(mydata, aes(x = age_years, y = optimism)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  theme_classic()
+
+# To see what the plots look like, we need to arrange them in the "Plot" window. Make sure "gridextra" is ticked in the "Packages" window
+
+grid.arrange(plot1, plot2, plot3, ncol = 3)
+
+# ncol = 3 tells R to put two next to each other, nrow = 1 tells R to put one above the other
+
+# Now, let's move on to hierarchical regression - exactly what we just did, but adding years of education as a control variable.
+
+# First, let's see if the control variable is significant by building model 1. Make sure it is called "model 1" and you need to run the summary to see the output.
+
+model1 <- lm(optimism ~ reading_age, data = mydata)
+summary(model1)
+
+# Next, build our final model that has all the variables (control and predictor variables). This is "model 2", and again, use the summary to see the output.
+
+model2 <- lm(optimism ~ reading_age + positive_SC + negative_SC + age_years, data = mydata)
+summary(model2)
+
+# Finally, we want to see if adding the predictor variables is significantly "better" than the control variable alone, this has two parts.
+
+# First - how much does the variance explained (adjusted R sq) increase?
+
+r2_control <- summary(model1)$adj.r.squared  # Adj Rsq of control model
+r2_full <- summary(model2)$adj.r.squared     # Adj Rsq of full model
+
+r2_change <- r2_full - r2_control  
+
+print(r2_change)  # Print the Adj Rsq change
+
+# Does the model significantly improve?
+
+anova(model1,model2)
+
+# We then want to create scatterplots to graphically represent any significant predictors (so two)
+
+# Optimism and positive self compassion
+
+plot1 <- ggplot(mydata, aes(x = positive_SC, y = optimism)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  theme_classic()
+
+# Optimism and negative self compassion
+
+plot2 <- ggplot(mydata, aes(x = negative_SC, y = optimism)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  theme_classic()
+
+# To see what the plots look like, we need to arrange them in the "Plot" window. Make sure "gridextra" is ticked in the "Packages" window
+
+grid.arrange(plot1, plot2, nrow = 1, ncol = 2)  
+
+# Yay - workshop finished!!!
+
+```
