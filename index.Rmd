@@ -2511,7 +2511,7 @@ grid.arrange(plot1, plot2, nrow = 1, ncol = 2)
 
 ```
 
-# **Workshop 17: Multiple Regression with Binary and Continuous Variables**
+# **Workshop 17: Multiple Regression with Binary and Interactive Variables**
 
 ***
 
